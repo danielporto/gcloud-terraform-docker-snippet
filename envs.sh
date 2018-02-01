@@ -3,3 +3,4 @@
 
 export TF_VAR_GCPCredentialsFile=/gcloud/credentials.json
 export TF_VAR_USR=${LOGNAME}
+export PATH=/google-cloud-sdk/bin:$PATH
