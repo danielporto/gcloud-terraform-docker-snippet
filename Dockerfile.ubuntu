@@ -5,6 +5,8 @@
 # Author Daniel Porto
 
 FROM ubuntu:artful
+LABEL maintainer="daniel.porto@gmail.com"
+
 #-----------------------------------------------------------------------------
 # install dependencies
 #-----------------------------------------------------------------------------
@@ -83,7 +85,7 @@ RUN apt update && apt install -y zsh && rm -rf /var/lib/apt/lists/* \
 # configuring cloud environment - depends on zshell above
 #-----------------------------------------------------------------------------
 # add the content into the container.
-ADD . /gcloud
+COPY . /gcloud
 WORKDIR /gcloud
 RUN chmod +x /gcloud/*.sh
 # # cloud environment variables
@@ -101,11 +103,16 @@ RUN useradd -c 'cloud user' -m -d /home/cloudusr -s /usr/bin/zsh cloudusr \
 USER cloudusr
 ENV HOME /home/cloudusr
 RUN git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles && $HOME/dotfiles/install \
-    # install zsh plugins
-    && export TERM=dumb && /usr/bin/zsh -ic 'exit' < /dev/null \
     # cloud environment variables
     && echo "source /gcloud/envs.sh" >> $HOME/dotfiles/zshrc \
     && echo "source /gcloud/load-credentials.sh" >> $HOME/dotfiles/zshrc 
+
+# install zsh plugins - it can fail due to download problems
+# and require you to re-run the build command. 
+# Thus better run in a separate layer for caching
+RUN export TERM=dumb \
+    && /usr/bin/zsh -ic 'exit' < /dev/null \
+    echo "Finished"
 
 
 #-----------------------------------------------------------------------------

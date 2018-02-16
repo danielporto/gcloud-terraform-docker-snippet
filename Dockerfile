@@ -5,6 +5,7 @@
 # Author Daniel Porto
 
 FROM google/cloud-sdk:alpine
+LABEL maintainer="daniel.porto@gmail.com"
 #-----------------------------------------------------------------------------
 # install dependencies
 #-----------------------------------------------------------------------------
@@ -63,11 +64,11 @@ ENV SHELL /bin/zsh
 # configuring cloud environment - depends on zshell above
 #-----------------------------------------------------------------------------
 # add the content into the container.
-ADD . /gcloud
+COPY . /gcloud
 WORKDIR /gcloud
 RUN chmod +x /gcloud/*.sh
 
-# some instances does not allow root login, thus start with a regular one.
+# GCP instances does not allow root login, thus start with a regular one.
 RUN adduser -s /bin/sh -D -h /home/cloudusr cloudusr \
     && echo "cloudusr ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
     && chown -R cloudusr.cloudusr /gcloud 
@@ -79,13 +80,17 @@ ENV HOME /home/cloudusr
 ENV PATH =PATH=/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN /bin/zsh -ic 'git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles && $HOME/dotfiles/install' \
-    # install zsh plugins
-    && export TERM=dumb && /bin/zsh -ic 'exit' < /dev/null \
     # cloud environment variables
     && echo "source /gcloud/envs.sh" >> $HOME/dotfiles/zshrc \
     && echo "source /gcloud/load-credentials.sh" >> $HOME/dotfiles/zshrc 
 
-
+    
+# install zsh plugins - it can fail due to download problems
+# and require you to re-run the build command. 
+# Thus better run in a separate layer for caching
+RUN export TERM=dumb \
+    && /bin/zsh -ic 'exit' < /dev/null \
+    echo "Finished"
 #-----------------------------------------------------------------------------
 # default terminal configuration and customization
 #-----------------------------------------------------------------------------
