@@ -17,7 +17,11 @@ Build the docker image with:
 ````
 $ docker build -t gce_mgmt .
 ````
-
+The command above will generate an alpine based image which is very small (324MB).
+Alternatively you can build an ubuntu based image (678MB) with the follwing:
+````
+docker build -t gce_mgmt:ubuntu -f Dockerfile.ubuntu .
+````
 # Run 
 Run the docker container, mapping the directory where the json was downloaded:
 
