@@ -36,7 +36,7 @@ $ sudo cp /opt/downloads/project-123141.json credentials.json
 
 log in into google cloud. You will be required to use a web-browser to complete the process.
 ````
-gcloud auth login
+$ gcloud auth login
 ````
 
 load the environment variables:
