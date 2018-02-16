@@ -26,13 +26,18 @@ docker build -t gce_mgmt:ubuntu -f Dockerfile.ubuntu .
 Run the docker container, mapping the directory where the json was downloaded:
 
 ```
-$ docker run --rm -v $(HOME)/downloads:/opt/downloads -it gce_mgmt
+$ docker run --rm -v $HOME/downloads:/opt/downloads -it gce_mgmt
 ````
 
-copy the json downloaded into the working directory of the container (credentials.json file):
+copy the json downloaded into the working directory (/gcloud) of the container (credentials.json file):
 ```
 $ sudo cp /opt/downloads/project-123141.json credentials.json
 ```
+
+log in into google cloud. You will be required to use a web-browser to complete the process.
+````
+gcloud auth login
+````
 
 load the environment variables:
 ````
