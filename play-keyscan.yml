@@ -1,0 +1,13 @@
+---
+# This playbook will save all remote pub keys locally
+# it must be used to avoid having to manually accept the identity of
+# an unknown set of hosts
+# 
+# https://www.ansible.com/resources/videos/quick-start-video
+
+- hosts: all
+  gather_facts: no
+  become: no
+  tasks:
+    - name: run keyscan to add keys of remote hosts to local known_hosts
+      local_action: shell ssh-keyscan {{ inventory_hostname }} > ~/.ssh/known_hosts
