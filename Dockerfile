@@ -23,11 +23,9 @@ RUN apk update \
 #-----------------------------------------------------------------------------
 # install ansible - future
 #-----------------------------------------------------------------------------
-# RUN apk update \
-#     && apk add ansible \
-#     && rm -rf /var/cache/apk/*
-
-
+RUN apk update \
+    && apk add 'ansible<2.4.2' \
+    && rm -rf /var/cache/apk/* 
 #-----------------------------------------------------------------------------
 # install terraform
 #-----------------------------------------------------------------------------
@@ -66,7 +64,13 @@ ENV SHELL /bin/zsh
 # add the content into the container.
 COPY . /gcloud
 WORKDIR /gcloud
-RUN chmod +x /gcloud/*.sh
+# add support for terraform dynamic inventory
+ADD https://github.com/nbering/terraform-inventory/releases/download/v1.0.1/terraform.py /usr/local/bin/
+ADD https://github.com/nbering/terraform-provider-ansible/releases/download/v0.0.3/terraform-provider-ansible-linux_amd64.zip .
+RUN unzip terraform-provider-ansible-linux_amd64.zip && rm -f terraform-provider-ansible-linux_amd64.zip \
+    && mkdir -p .terraform/plugins \
+    && mv linux_amd64 .terraform/plugins \
+    && chmod +x /gcloud/*.sh && chmod o+rx /usr/local/bin/terraform.py 
 
 # GCP instances does not allow root login, thus start with a regular one.
 RUN adduser -s /bin/sh -D -h /home/cloudusr cloudusr \
@@ -77,7 +81,7 @@ RUN adduser -s /bin/sh -D -h /home/cloudusr cloudusr \
 # switch user to install zsh with a some plugins
 USER cloudusr
 ENV HOME /home/cloudusr
-ENV PATH =PATH=/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH /google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN /bin/zsh -ic 'git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles && $HOME/dotfiles/install' \
     # cloud environment variables
