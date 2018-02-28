@@ -9,15 +9,14 @@ LABEL maintainer="daniel.porto@gmail.com"
 #-----------------------------------------------------------------------------
 # install dependencies
 #-----------------------------------------------------------------------------
-# install tools for managing ppa repositories
 RUN apk update \
     # depends on unzip curl git already present
     && apk add tmux \
                 # sudo is required to copy files from volumes into the container
                 sudo \
                 # perl and ncurses are required for vim
-                vim perl ncurses\
-    && rm -rf /var/cache/apk/*
+                vim perl ncurses py-pip \
+    && rm -rf /var/cache/apk/* 
 
 
 #-----------------------------------------------------------------------------
@@ -25,7 +24,8 @@ RUN apk update \
 #-----------------------------------------------------------------------------
 RUN apk update \
     && apk add 'ansible<2.4.2' \
-    && rm -rf /var/cache/apk/* 
+    && rm -rf /var/cache/apk/* \
+    && pip install docker-py
 #-----------------------------------------------------------------------------
 # install terraform
 #-----------------------------------------------------------------------------

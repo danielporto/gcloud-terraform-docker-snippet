@@ -1,7 +1,0 @@
----
-- hosts: all
-  gather_facts: no
-  sudo: no
-  tasks:
-    - name: run keyscan to add keys of remote hosts to local known_hosts
-      local_action: shell ssh-keyscan {{ inventory_hostname }} > ~/.ssh/known_hosts

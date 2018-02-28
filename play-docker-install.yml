@@ -1,0 +1,5 @@
+- name: Playbook Task to install docker role
+  hosts: all
+  become: yes
+  roles:
+     - { role: kabolt.docker, tags: [ 'docker' ], docker_compose_version: 1.19.0 }

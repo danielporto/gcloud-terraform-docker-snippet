@@ -34,17 +34,14 @@ copy the json downloaded into the working directory (/gcloud) of the container (
 $ sudo cp /opt/downloads/project-123141.json credentials.json
 ```
 
-log in into google cloud. You will be required to use a web-browser to complete the process.
-````
-$ gcloud auth login
-````
-
 load the environment variables:
 ````
 $ source load-credentials.sh
 ````
 
-wait for the the gcp setup.
+If that is the first time your run this in your project, you might want to
+enable the google cloud apis, otherwise press any key to ignore it.
+
 
 Initialize terraform:
 ````
@@ -67,7 +64,14 @@ $ terraform destroy
 
 # Notes
 You can access gce instances with the alias: **sshgcp instance**
+There are other interesting aliases you might find useful (after generating the tfstate with terraform apply:
+* ansible-ti :  ansible command plus terraform dynamic inventory
+* ansible-tip : ansible-playbook command plus terraform dynamic inventory
+* ansible-inventory-ti : ansible-inventory command plus terraform dynamic inventory
 
+After deploying terraform, run ansible-tip sshscan.yml to load the ssh keys of remote nodes.
+
+ 
 
 
 

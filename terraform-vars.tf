@@ -1,13 +1,10 @@
 # How to define variables in terraform:
 # https://www.terraform.io/docs/configuration/variables.html
 
-
-# Name of the project, replace "teste" for your
-# respective group ID
+# placeholder for the name of the project
 variable "GCPProjectID" {
-    #this is defined into the envs.sh and 
-    #only chars are allowed in these variables identifiers
-    #default = "MyProject"
+    # this is defined into the envs.sh and 
+    # default = "MyProject"
 }
 
 # A list of machine types is found at:
@@ -29,5 +26,7 @@ variable "GCPRegion" {
 
 # placeholder for the container's user local account
 variable "USR" {
-    
+# this is required to proper configure ansible provider
+# with a remote ssh account
+    # default = "cloudusr"    
 }

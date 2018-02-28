@@ -1,0 +1,21 @@
+---
+- hosts: webservice
+  become: yes
+  tasks:
+    - name: Run nginx server
+      docker_container:
+        name: 'nginx'
+        image: 'nginx:alpine'
+        state: started
+        network_mode: host
+        restart_policy: always
+        # memory: '{{ container_memory_limit }}'
+        # volumes:
+        #   - '{{ nginx_settings_path }}/conf.d:/etc/nginx/conf.d:ro'
+        #   - '{{ nginx_settings_path }}/certs:/etc/certs:ro'
+      register: nginx_container
+  
+  handlers:
+    - name: Restart nginx
+      shell: 'docker kill -s HUP nginx'
+      when: nginx_container is defined and not nginx_container.changed
