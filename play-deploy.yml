@@ -1,0 +1,4 @@
+---
+- import_playbook: play-load-node-credentials.yml
+- import_playbook: play-docker-install.yml
+- import_playbook: play-nginx-container.yml

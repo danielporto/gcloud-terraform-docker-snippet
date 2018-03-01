@@ -12,10 +12,11 @@ LABEL maintainer="daniel.porto@gmail.com"
 RUN apk update \
     # depends on unzip curl git already present
     && apk add tmux \
-                # sudo is required to copy files from volumes into the container
+                # required for ansible and ansible modules
                 sudo \
+                # py-pip \
                 # perl and ncurses are required for vim
-                vim perl ncurses py-pip \
+                vim perl ncurses \
     && rm -rf /var/cache/apk/* 
 
 
@@ -25,7 +26,15 @@ RUN apk update \
 RUN apk update \
     && apk add 'ansible<2.4.2' \
     && rm -rf /var/cache/apk/* \
-    && pip install docker-py
+    # required ansible modules
+    # && pip install \
+                    # control docker
+                    # docker \
+                    #'docker-py>=1.7.0' \
+                    #'docker-compose>=1.7.0' \
+                    # manage roles
+                    # molecule \
+    && echo ""
 #-----------------------------------------------------------------------------
 # install terraform
 #-----------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 # 
 alias help='
     echo "Bootstrap terraform with:              \$ terraform init";\
-    echo "Deploy the configuration with          \$ terraform apply -auto-approve";\
+    echo "Deploy the configuration with          \$ terraform apply ";\
     echo "Cleanup deployment                     \$ terraform destroy";\
     echo "To list ansible dynamic inventory      \$ ansibleti-inventory --list";\
     echo "To install sshkeys of remote hosts run \$ ansibleti-playbook keyscan.yml";\

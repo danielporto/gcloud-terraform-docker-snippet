@@ -1,0 +1,21 @@
+---
+# this task deploy an nginx container at a vm with docker
+- hosts: webservice
+  # GCP requires sudo to allow unpriviledged user run docker commands
+  become: yes
+  tasks:
+    - name: Run nginx server
+      docker_container:
+        name: 'nginx'
+        image: 'nginx:alpine'
+        state: started
+        network_mode: host
+        restart_policy: always
+        exposed_ports: 
+          - 80
+      register: nginx_container
+  
+  # handlers:
+  #   - name: Restart nginx
+  #     shell: 'docker kill -s HUP nginx'
+  #     when: nginx_container is defined and not nginx_container.changed
