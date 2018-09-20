@@ -14,7 +14,7 @@ alias help='
     echo "Deploy the configuration with          \$ terraform apply ";\
     echo "Cleanup deployment                     \$ terraform destroy";\
     echo "To list ansible dynamic inventory      \$ ansibleti-inventory --list";\
-    echo "To install sshkeys of remote hosts run \$ ansibleti-playbook keyscan.yml";\
+    echo "To install sshkeys of remote hosts run \$ ansibleti-playbook play-load-node-credentials.yml";\
     echo "Ping hosts of terraform state:         \$ ansibleti all -m ping" ;\
     echo "Send command to nodes:                 \$ ansibleti all -m shell -a \"whoami\" "
     echo "Check other aliases with:              \$ alias ";\
