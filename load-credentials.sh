@@ -83,7 +83,9 @@ if [ -f "${TF_VAR_GCPCredentialsFile}" ]; then
 else
     echo "-------------------------------------------------------"
     echo " 1 - Credentials file not found. Please download it to ${TF_VAR_GCPCredentialsFile}," 
-    echo " 2 - Run: source load-credentials.sh"
+    echo "   copy the json file form the mounted dir: cp /opt/downloads/project-1232121.json ${TF_VAR_GCPCredentialsFile}"
+    echo " 2 - Run:" 
+    echo "   $ source load-credentials.sh"
     echo "-------------------------------------------------------"
 
 fi 

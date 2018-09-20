@@ -17,6 +17,10 @@ RUN apk update \
                 # py-pip \
                 # perl and ncurses are required for vim
                 vim perl ncurses \
+                rsync \
+                gawk \
+                grep \
+                zsh \
     && rm -rf /var/cache/apk/* 
 
 
@@ -24,7 +28,8 @@ RUN apk update \
 # install ansible - future
 #-----------------------------------------------------------------------------
 RUN apk update \
-    && apk add 'ansible<2.4.2' \
+    # && apk add 'ansible<2.4.2' \
+    && apk add 'ansible' \
     && rm -rf /var/cache/apk/* \
     # required ansible modules
     # && pip install \
@@ -78,7 +83,8 @@ ADD https://github.com/nbering/terraform-inventory/releases/download/v1.0.1/terr
 ADD https://github.com/nbering/terraform-provider-ansible/releases/download/v0.0.3/terraform-provider-ansible-linux_amd64.zip .
 RUN unzip terraform-provider-ansible-linux_amd64.zip && rm -f terraform-provider-ansible-linux_amd64.zip \
     && mkdir -p .terraform/plugins \
-    && mv linux_amd64 .terraform/plugins \
+    && rsync -a linux_amd64 .terraform/plugins/ \
+    && rm -rf linux_amd64 \
     && chmod +x /gcloud/*.sh && chmod o+rx /usr/local/bin/terraform.py 
 
 # GCP instances does not allow root login, thus start with a regular one.
@@ -92,18 +98,20 @@ USER cloudusr
 ENV HOME /home/cloudusr
 ENV PATH /google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-RUN /bin/zsh -ic 'git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles && $HOME/dotfiles/install' \
+RUN git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles \
     # cloud environment variables
     && echo "source /gcloud/envs.sh" >> $HOME/dotfiles/zshrc \
     && echo "source /gcloud/load-credentials.sh" >> $HOME/dotfiles/zshrc 
 
-    
-# install zsh plugins - it can fail due to download problems
-# and require you to re-run the build command. 
-# Thus better run in a separate layer for caching
-RUN export TERM=dumb \
-    && /bin/zsh -ic 'exit' < /dev/null \
-    echo "Finished"
+RUN $HOME/dotfiles/install 
+
+## install zsh plugins - it can fail due to download problems
+## and require you to re-run the build command. 
+## Thus better run in a separate layer for caching
+#RUN export TERM=dumb \
+#    && zsh -ic 'exit' < /dev/null \
+#    && echo "Finished"
+
 #-----------------------------------------------------------------------------
 # default terminal configuration and customization
 #-----------------------------------------------------------------------------

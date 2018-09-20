@@ -19,6 +19,7 @@ RUN apt update \
                         tmux \
                         git \
                         sudo \
+                        gawk \ 
     && rm -rf /var/lib/apt/lists/* 
 
 #-----------------------------------------------------------------------------
@@ -91,6 +92,15 @@ RUN chmod +x /gcloud/*.sh
 # # cloud environment variables
 # RUN  echo "source /gcloud/envs.sh" >> $HOME/dotfiles/zshrc \
 #     && echo "source /gcloud/load-credentials.sh" >> $HOME/dotfiles/zshrc 
+# add support for terraform dynamic inventory
+ADD https://github.com/nbering/terraform-inventory/releases/download/v1.0.1/terraform.py /usr/local/bin/
+ADD https://github.com/nbering/terraform-provider-ansible/releases/download/v0.0.3/terraform-provider-ansible-linux_amd64.zip .
+RUN unzip terraform-provider-ansible-linux_amd64.zip && rm -f terraform-provider-ansible-linux_amd64.zip \
+    && mkdir -p .terraform/plugins \
+    && rsync -a linux_amd64 .terraform/plugins/ \
+    && rm -rf linux_amd64 \
+    && chmod +x /gcloud/*.sh && chmod o+rx /usr/local/bin/terraform.py 
+
 
 
 # some instances does not allow root login, thus start with a regular one.
@@ -102,17 +112,19 @@ RUN useradd -c 'cloud user' -m -d /home/cloudusr -s /usr/bin/zsh cloudusr \
 # switch user to install zsh with a some plugins
 USER cloudusr
 ENV HOME /home/cloudusr
-RUN git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles && $HOME/dotfiles/install \
+RUN git clone https://github.com/danielporto/zsh-dotfiles.git $HOME/dotfiles \
     # cloud environment variables
     && echo "source /gcloud/envs.sh" >> $HOME/dotfiles/zshrc \
     && echo "source /gcloud/load-credentials.sh" >> $HOME/dotfiles/zshrc 
+
+RUN $HOME/dotfiles/install 
 
 # install zsh plugins - it can fail due to download problems
 # and require you to re-run the build command. 
 # Thus better run in a separate layer for caching
 RUN export TERM=dumb \
-    && /usr/bin/zsh -ic 'exit' < /dev/null \
-    echo "Finished"
+    && zsh -ic 'exit' < /dev/null \
+    && echo "Finished"
 
 
 #-----------------------------------------------------------------------------
