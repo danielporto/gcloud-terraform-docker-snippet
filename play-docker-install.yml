@@ -3,7 +3,7 @@
   hosts: all
   become: yes
   roles:
-     - { role: kabolt.docker, tags: [ 'docker' ], docker_compose_version: 1.19.0 }
+     - { role: kabolt.docker, tags: [ 'docker' ], docker_compose_version: 1.22.0 }
 
   # the python docker package is required for allowing ansible to remote
   # manage docker containers with docker_container module

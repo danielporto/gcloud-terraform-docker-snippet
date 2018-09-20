@@ -22,8 +22,8 @@ resource "google_compute_instance" "webserver" {
         initialize_params {
         # image list can be found at:
         # https://cloud.google.com/compute/docs/images
-        # image = "cos-cloud/cos-stable" # google optimized container image
-         image = "debian-cloud/debian-9"
+        #  image = "cos-cloud/cos-stable" # google optimized container image
+        image = "debian-cloud/debian-9"
         #    image = "centos-cloud/centos-7"
         }
     } #end boot_dist
